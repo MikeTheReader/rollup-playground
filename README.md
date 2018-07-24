@@ -4,7 +4,15 @@ Trying to recreate an error I was seeing using rollup to import a third-party li
 
 So, I tried to narrow it down to the smallest possible thing to reproduce the error. 
 
-It looks like when a file is used to import everything from another file and export that, we get issues. The bundle created by Rollup has:
+It looks like when a file is used to import everything from another file and export that, we get issues.
+
+If we import a file that has the following content:
+
+```
+module.exports = require('./wp-bundle');
+```
+
+The bundle created by Rollup has:
 
 ```javascript
 unwrapExports(wpBundle);
@@ -23,4 +31,4 @@ var wpBundle_1 = wpBundle.Named;
 
 ## To Recreate
 
-Run `yarn roll` to create the `rollup-bundle.js`. Modify the `index.js` file to either point to the `wp-index.js` (which is just requiring and exporting) or `wp-bundle.js` (which is the raw webpack bundle).
+Run `yarn roll` to create the `rollup-bundle.js`. Modify the `index.js` file to either point to the `wp-index.js` (which is just requiring and exporting) or `wp-bundle.js` (which is the raw webpack bundle). Bringing up the `index.html` and looking at the debug console will show what the imported artifacts look like. `Unnamed` should be a function, and so should `Named`.
